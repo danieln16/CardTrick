@@ -1,0 +1,215 @@
+import random
+from termcolor import colored #colour coordination helps readability
+menuch = 0
+cardnum = 0
+INT = []
+deck = 0
+plydeck = []
+cpudeck = []
+plych = 0
+cpuch = 0
+card = []
+NAM = []
+names = open('dogs.txt', 'r')
+for line in names: 
+	NAM.append(line.replace('\n', '')) #get dog names and compile them in a list
+
+def stmenu(): #the start menu where you either play or quit
+	menuch = input("1-Quit or 2-Play?")
+	if menuch == "1":
+		exit()
+	elif menuch == "2":
+		cardgen(NAM)
+	else:
+		print("1 or 2 please.")
+		stmenu()
+
+def cardgen(NAM):	#the card generator and sorter
+	cardnum = input("How many cards would you like to play with?")
+	DRL = [1,2,3,4,5,6,7,8,9,10]
+	EXC = [1,2,3,4,5]
+	for i in range(1,101):
+		INT.append(i)
+	FRN = [1,2,3,4,5,6,7,8,9,10]
+	if cardnum.isdigit():
+		cardnum = int(cardnum)
+		if cardnum % 2 == 0:
+			for i in range(0,cardnum): #this 'for' shuffles vars and makes cards
+				random.shuffle(DRL)
+				random.shuffle(INT)
+				random.shuffle(FRN)
+				random.shuffle(EXC)
+				random.shuffle(NAM)
+				card.append({"Name":NAM[0],"Drool":DRL[0],"Exercise":EXC[0],"Intelligence":INT[0], "Friendliness":FRN[0]})
+				del NAM[0] #enures no 2 cards may have the same name
+				random.shuffle(card)
+			for i in range (int(cardnum/2)): #sorts half the cards into player's deck
+				plydeck.append(card[i])
+				del card[i]
+			cpudeck = card #all other cards are the CPU's
+			plygame(cpudeck, plydeck)
+		else:
+			print("needs to be divisible by 2")
+			cardgen(NAM)
+	else:
+		print("Needs to be a number")
+		cardgen(NAM)
+	plygame(cpudeck, plydeck) #successful card creation starts the game
+
+def plygame(cpudeck, plydeck): #player's go
+	if not plydeck: #loss state
+		print(colored("You lost","red"))
+		stmenu()
+	if not cpudeck: #win state
+		print(colored("You have won","green"))
+		stmenu()
+	print(colored("\nYour card:","blue")) 
+	print(plydeck[0])
+	print("\nChoose a stat\nDrool, Exercise, Intelligence or Friendliness (D,E,I or F)")
+	plych = input().upper()
+	print(colored(str(plych), "blue"))
+	if plych == "D" or plych == "E" or plych == "I" or plych == "F": #ensures correct input
+		print(colored("\nTheir card:","yellow"))
+		print(cpudeck[0])
+	else:
+		print(colored("\nDid not understand, please try again", 'cyan'))
+		plygame(cpudeck, plydeck)
+	if plych == "D": #drool is reversed compared to other stats 'golf scoring'
+		if plydeck[0]["Drool"] <= cpudeck[0]["Drool"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if plych == "E":
+		if plydeck[0]["Exercise"] >= cpudeck[0]["Exercise"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if plych == "F":
+		if plydeck[0]["Friendliness"] >= cpudeck[0]["Friendliness"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if plych == "I":
+		if plydeck[0]["Intelligence"] >= cpudeck[0]["Intelligence"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+def cpugame(cpudeck, plydeck): #CPU's go
+	if not plydeck: #loss state
+		print(colored("You lost","red"))
+		stmenu()
+	if not cpudeck: #win state
+		print(colored("You have won","green"))
+		stmenu()
+	print(colored("\nTheir card:","yellow"))
+	print(cpudeck[0])
+	cpulst = ["D","E","I","F"]
+	random.shuffle(cpulst)
+	cpuch = cpulst[0]
+	#3 lines above are the computer's category choice
+	print("please use D,E,I or F")
+	print(colored(str(cpuch), 'yellow'))
+	print(colored("\nYour card:", "blue"))
+	print(plydeck[0])
+	if cpuch.upper() == "D": #drool is reversed compared to other stats 'golf scoring'
+		if plydeck[0]["Drool"] <= cpudeck[0]["Drool"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if cpuch.upper() == "E":
+		if plydeck[0]["Exercise"] >= cpudeck[0]["Exercise"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if cpuch.upper() == "F":
+		if plydeck[0]["Friendliness"] >= cpudeck[0]["Friendliness"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+	if cpuch.upper() == "I":
+		if plydeck[0]["Intelligence"] >= cpudeck[0]["Intelligence"]:
+			print(colored("You have won the round","green"))
+			plydeck.append(cpudeck[0])
+			del cpudeck[0]
+			plydeck.append(plydeck[0])
+			del plydeck[0]
+			plygame(cpudeck, plydeck)
+		else:
+			print(colored("You have lost the round","red"))
+			cpudeck.append(plydeck[0])
+			del plydeck[0]
+			cpudeck.append(cpudeck[0])
+			del cpudeck[0]
+			cpugame(cpudeck, plydeck)
+
+stmenu()
