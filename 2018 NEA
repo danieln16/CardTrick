@@ -1,0 +1,80 @@
+## AQA 2018 Computer Science NEA - Card Trick
+import time
+import random
+def cls(): print("\n" * 100)
+
+ 
+
+def ask():
+    print("*******************************************************************************************")
+    print("Pick a card. Check which pile it is in and enter the number. The code will guess your card.")
+    print("*******************************************************************************************")
+    print("\n PILE 1:")
+	for x in first:
+        print(x)
+
+	print("\n PILE 2:")
+    for x in second:
+        print(x)
+    
+	print("\n PILE 3:")
+    for x in third:
+        print(x)
+
+ 
+
+    selection = input()
+    if selection == "1":
+        cards.extend(second)
+        cards.extend(first)
+        cards.extend(third)
+    elif selection == "2":
+        cards.extend(first)
+        cards.extend(second)
+        cards.extend(third)
+    elif selection == "3":
+        cards.extend(first)
+        cards.extend(third)
+        cards.extend(second)
+    else:
+        print("Invalid Input")
+        time.sleep(2)
+        ask()
+
+ 
+
+        
+cards = []
+suitechoice = ["Hearts","Spades","Diamonds","Clubs"]
+cardchoice = ["Ace","2","3","4","5","6","7","8","9","10","Jack","Queen","King"]
+while len(cards) < 21:
+    suite = random.choice(suitechoice)
+    cardno = random.choice(cardchoice)
+    if (cardno + " of " + suite) in cards:
+        suite = random.choice(suitechoice)
+        cardno = random.choice(cardchoice)
+    else:
+        cards.append(cardno + " of " + suite)
+    
+
+ 
+
+
+for x in range(3):
+    cls()
+    #clears the screen
+    first  = []
+    second = []
+    third  = []
+    for x in range(0,21,3):
+        first.append(cards[x])
+        second.append(cards[x+1])
+        third.append(cards[x+2])
+    cards = []
+    ask()
+
+ 
+
+
+print("You're thinking of the " + cards[10])
+time.sleep(10)
